@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import api from "../api/axiosInstance";
+import TodoItem from "../components/TodoItem";
 
 import { isAuthenticatedAtom } from "../store/store";
 
@@ -43,10 +44,6 @@ function DashboardPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-        Your Todos (Raw Data)
-      </h1>
-
       {isLoading && (
         <p className="text-center text-blue-500 dark:text-blue-300">
           Loading todos...
@@ -60,10 +57,11 @@ function DashboardPage() {
       )}
 
       {!isLoading && !fetchError && todosData && (
-        <pre className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg shadow-md overflow-auto text-sm text-gray-800 dark:text-gray-200">
-          {/* Dump the raw JSON response */}
-          {JSON.stringify(todosData, null, 2)}
-        </pre>
+        <div>
+          {todosData.todos.map((todo) => (
+            <TodoItem key={todo._id} todo={todo} />
+          ))}
+        </div>
       )}
 
       {!isLoading && !fetchError && !todosData && (
