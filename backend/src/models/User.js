@@ -36,8 +36,19 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-userSchema.methods.matchPassword = async function (enterdPassword) {
-  return await bcrypt.compare(enterdPassword, this.password);
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  console.log("--- Debugging matchPassword ---");
+  console.log("Entered Password:", enteredPassword);
+  console.log("Hashed Password in DB (this.password):", this.password); // This should be the long hashed string
+  try {
+    const isMatch = await bcrypt.compare(enteredPassword, this.password);
+    console.log("Password Match Result:", isMatch);
+    console.log("--- End Debugging ---");
+    return isMatch;
+  } catch (error) {
+    console.error("Error during bcrypt.compare:", error);
+    return false; // Return false if an error occurs during comparison
+  }
 };
 
 const User = mongoose.model("User", userSchema);

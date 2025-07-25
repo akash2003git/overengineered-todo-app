@@ -67,7 +67,7 @@ async function updateTodo(req, res) {
     });
     res.status(200).json({ updatedTodo });
   } catch (err) {
-    if (err instanceof ZodError) {
+    if (err instanceof z.ZodError) {
       console.error("Zod validation error during todo update: ", err.message);
       return res.status(400).json({
         message: "Validation failed for todo update",

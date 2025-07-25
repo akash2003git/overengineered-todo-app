@@ -26,7 +26,7 @@ const Layout = ({ children }) => {
   };
 
   return (
-    <div className="h-full min-h-screen bg-white dark:bg-black font-poppins text-black dark:text-white transition-colors duration-200">
+    <div className="h-full min-h-screen bg-white dark:bg-black font-poppins text-black dark:text-white transition-colors duration-200 sm:px-10 md:px-40 lg:px-60 xl:px-100">
       <Navbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
       <main className="container">{children}</main>
       <Footer />

@@ -1,6 +1,5 @@
 import axios from "axios";
-import { getAtom, setAtom } from "jotai";
-import { accessTokenAtom, userAtom } from "../store/atoms/authAtom";
+import { jotaiStore, accessTokenAtom, userAtom } from "../store/store";
 
 const API_URL = "http://localhost:5000/api";
 
@@ -14,26 +13,22 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const accessToken = getAtom(accessTokenAtom);
+    const accessToken = jotaiStore.get(accessTokenAtom);
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  },
+  (error) => Promise.reject(error),
 );
 
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     if (error.response?.status === 401) {
-      console.error(
-        "Unauthorized access: Access token invalid or expired. Logging out.",
-      );
-      setAtom(accessTokenAtom, null);
-      setAtom(userAtom, null);
+      console.error("Unauthorized. Logging out.");
+      jotaiStore.set(accessTokenAtom, null);
+      jotaiStore.set(userAtom, null);
       localStorage.removeItem("accessToken");
       localStorage.removeItem("user");
       window.location.href = "/login";
@@ -41,3 +36,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+export default api;

@@ -1,7 +1,64 @@
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import Button from "../components/Button";
+
 function RegisterPage() {
+  const [username, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Register attempt with:", { username, email, password });
+    // TODO: Call your signup API here using Axios
+    // Example: api.post('/auth/register', { email, password })
+    // On success, update Jotai atoms and navigate
+    // On error, display error message
+  };
+
   return (
-    <div>
-      <h1>RegisterPage</h1>
+    <div className="m-3 flex flex-col justify-center items-center sm:min-h-[calc(100vh-150px)]">
+      <h1 className="text-3xl font-bold my-5 text-gray-900 dark:text-gray-100">
+        Create an account
+      </h1>
+      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-black p-8">
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUserName(e.target.value)}
+          className="border-2 border-gray-500 dark:border-gray-600 placeholder-gray-500 rounded-full text-gray-900 dark:text-gray-100 p-3 mb-4 w-full outline-none bg-white dark:bg-black transition-colors duration-200"
+        />
+        <input
+          type="email"
+          placeholder="Email address"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="border-2 border-gray-500 dark:border-gray-600 placeholder-gray-500 rounded-full text-gray-900 dark:text-gray-100 p-3 mb-4 w-full outline-none bg-white dark:bg-black transition-colors duration-200"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="border-2 border-gray-500 dark:border-gray-600 placeholder-gray-500 rounded-full text-gray-900 dark:text-gray-100 p-3 mb-6 w-full outline-none bg-white dark:bg-black transition-colors duration-200"
+        />
+        <Button
+          label="Sign Up"
+          type="submit"
+          altStyle={false}
+          className="w-full py-3 mb-3 font-semibold text-base rounded-full focus:outline-none focus:ring-2 transition-all duration-200"
+        />
+        <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            Log in
+          </Link>
+        </p>
+      </form>
     </div>
   );
 }
