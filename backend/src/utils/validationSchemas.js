@@ -9,7 +9,7 @@ const registerSchema = z.object({
   email: z.email({ message: "Invalid email address" }).trim().toLowerCase(),
   password: z
     .string()
-    .min(3, { message: "Password must be atleast 3 characters long" })
+    .min(6, { message: "Password must be atleast 6 characters long" })
     .max(100, { message: "Password cannot exceed 100 characters" }),
 });
 

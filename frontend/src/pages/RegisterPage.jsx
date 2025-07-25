@@ -1,19 +1,87 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSetAtom, useAtomValue } from "jotai";
+import api from "../api/axiosInstance";
 import Button from "../components/Button";
+
+import {
+  accessTokenAtom,
+  userAtom,
+  authErrorAtom,
+  authLoadingAtom,
+} from "../store/store";
 
 function RegisterPage() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const setAccessToken = useSetAtom(accessTokenAtom);
+  const setUser = useSetAtom(userAtom);
+  const setLoading = useSetAtom(authLoadingAtom);
+  const setError = useSetAtom(authErrorAtom);
+
+  const isLoading = useAtomValue(authLoadingAtom);
+  const authError = useAtomValue(authErrorAtom);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
+    setError(null);
+
     console.log("Register attempt with:", { username, email, password });
-    // TODO: Call your signup API here using Axios
-    // Example: api.post('/auth/register', { email, password })
-    // On success, update Jotai atoms and navigate
-    // On error, display error message
+
+    try {
+      const response = await api.post("/auth/register", {
+        username,
+        email,
+        password,
+      });
+
+      const {
+        accessToken,
+        _id,
+        username: registeredUsername,
+        email: registeredEmail,
+      } = response.data;
+
+      setAccessToken(accessToken);
+
+      setUser({ _id, username: registeredUsername, email: registeredEmail });
+
+      console.log("Registration successful!", response.data);
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error(
+        "Registration failed:",
+        error.response?.data || error.message,
+      );
+      let errorMessage = "Registration failed. Please try again."; // Default message
+
+      if (error.response && error.response.data) {
+        // Check for specific validation errors from Zod
+        if (
+          error.response.data.message === "Validation failed" &&
+          error.response.data.errors &&
+          error.response.data.errors.length > 0
+        ) {
+          // If there are multiple errors, you might concatenate them or pick the first one
+          errorMessage = error.response.data.errors
+            .map((err) => err.message)
+            .join(", ");
+        } else if (error.response.data.message) {
+          // For other specific messages from the backend (e.g., "Email already exists")
+          errorMessage = error.response.data.message;
+        }
+      }
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -28,6 +96,7 @@ function RegisterPage() {
           value={username}
           onChange={(e) => setUserName(e.target.value)}
           className="border-2 border-gray-500 dark:border-gray-600 placeholder-gray-500 rounded-full text-gray-900 dark:text-gray-100 p-3 mb-4 w-full outline-none bg-white dark:bg-black transition-colors duration-200"
+          required
         />
         <input
           type="email"
@@ -35,6 +104,7 @@ function RegisterPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="border-2 border-gray-500 dark:border-gray-600 placeholder-gray-500 rounded-full text-gray-900 dark:text-gray-100 p-3 mb-4 w-full outline-none bg-white dark:bg-black transition-colors duration-200"
+          required
         />
         <input
           type="password"
@@ -42,12 +112,29 @@ function RegisterPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="border-2 border-gray-500 dark:border-gray-600 placeholder-gray-500 rounded-full text-gray-900 dark:text-gray-100 p-3 mb-6 w-full outline-none bg-white dark:bg-black transition-colors duration-200"
+          required
         />
+
+        {/* Display loading indicator */}
+        {isLoading && (
+          <p className="text-center text-blue-500 dark:text-blue-300 mb-3">
+            Registering new user...
+          </p>
+        )}
+
+        {/* Display error message */}
+        {authError && (
+          <p className="text-center text-red-500 dark:text-red-400 mb-3">
+            {authError}
+          </p>
+        )}
+
         <Button
-          label="Sign Up"
+          label={isLoading ? "Registering..." : "Sign Up"}
           type="submit"
           altStyle={false}
           className="w-full py-3 mb-3 font-semibold text-base rounded-full focus:outline-none focus:ring-2 transition-all duration-200"
+          disabled={isLoading}
         />
         <p className="mt-4 text-center text-gray-700 dark:text-gray-300">
           Already have an account?{" "}

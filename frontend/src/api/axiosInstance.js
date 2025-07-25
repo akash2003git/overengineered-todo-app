@@ -25,13 +25,27 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
+    const originalRequest = error.config;
     if (error.response?.status === 401) {
-      console.error("Unauthorized. Logging out.");
-      jotaiStore.set(accessTokenAtom, null);
-      jotaiStore.set(userAtom, null);
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
+      const isAuthEndpoint =
+        originalRequest.url.includes("/auth/login") ||
+        originalRequest.url.includes("/auth/register");
+
+      if (isAuthEndpoint) {
+        console.warn(
+          "401 received on an authentication endpoint. Letting the component handle the error.",
+        );
+        return Promise.reject(error);
+      } else {
+        console.error(
+          "Unauthorized access on protected route: Access token invalid or expired. Forcing logout.",
+        );
+        jotaiStore.set(accessTokenAtom, null);
+        jotaiStore.set(userAtom, null);
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   },

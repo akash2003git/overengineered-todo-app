@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
-const User = require("./src/models/User");
-const Todo = require("./src/models/Todo");
-const { connectDB } = require("./src/config/db");
+const User = require("./models/User");
+const Todo = require("./models/Todo");
 
 dotenv.config({ path: "./.env" });
 
@@ -13,7 +12,7 @@ console.log(
 );
 
 // Connect to the database
-connectDB();
+mongoose.connect(process.env.MONGO_URI);
 
 const plainTextUsers = [
   {
