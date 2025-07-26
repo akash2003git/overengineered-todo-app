@@ -13,7 +13,7 @@ const altLinkClasses =
 
 const Navbar = ({ isAuthenticated, onLogout }) => {
   return (
-    <nav className="bg-white dark:bg-black p-3">
+    <nav className="bg-white dark:bg-gray-900 p-3 rounded-md border-gray-600 border-2">
       <div className="container mx-auto flex justify-between items-center">
         <Link
           to="/"
