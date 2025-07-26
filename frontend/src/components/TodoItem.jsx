@@ -1,9 +1,8 @@
 import React from "react";
-import { FaRegEdit } from "react-icons/fa"; // Example icon, choose one you like
-import Button from "./Button"; // Assuming your Button component path
+import { FaRegEdit } from "react-icons/fa";
+import Button from "./Button";
 
 function TodoItem({ todo, onEditClick }) {
-  // Added onEditClick prop
   return (
     <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-4 flex items-center justify-between">
       <div>
@@ -26,7 +25,6 @@ function TodoItem({ todo, onEditClick }) {
           label={<FaRegEdit className="text-lg" />}
           onClick={() => onEditClick(todo)}
           altStyle={true}
-          className="p-2 rounded-full text-gray-700 dark:text-gray-300 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700"
         />
       </div>
     </div>

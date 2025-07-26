@@ -60,21 +60,18 @@ function RegisterPage() {
         "Registration failed:",
         error.response?.data || error.message,
       );
-      let errorMessage = "Registration failed. Please try again."; // Default message
+      let errorMessage = "Registration failed. Please try again.";
 
       if (error.response && error.response.data) {
-        // Check for specific validation errors from Zod
         if (
           error.response.data.message === "Validation failed" &&
           error.response.data.errors &&
           error.response.data.errors.length > 0
         ) {
-          // If there are multiple errors, you might concatenate them or pick the first one
           errorMessage = error.response.data.errors
             .map((err) => err.message)
             .join(", ");
         } else if (error.response.data.message) {
-          // For other specific messages from the backend (e.g., "Email already exists")
           errorMessage = error.response.data.message;
         }
       }
@@ -89,7 +86,7 @@ function RegisterPage() {
       <h1 className="text-3xl font-bold my-5 text-gray-900 dark:text-gray-100">
         Create an account
       </h1>
-      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-black p-8">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm p-8">
         <input
           type="text"
           placeholder="Username"
@@ -115,14 +112,12 @@ function RegisterPage() {
           required
         />
 
-        {/* Display loading indicator */}
         {isLoading && (
           <p className="text-center text-blue-500 dark:text-blue-300 mb-3">
             Registering new user...
           </p>
         )}
 
-        {/* Display error message */}
         {authError && (
           <p className="text-center text-red-500 dark:text-red-400 mb-3">
             {authError}

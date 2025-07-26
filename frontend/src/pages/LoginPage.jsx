@@ -57,7 +57,7 @@ function LoginPage() {
       <h1 className="text-3xl font-bold my-5 text-gray-900 dark:text-gray-100">
         Welcome Back
       </h1>
-      <form onSubmit={handleSubmit} className="w-full max-w-sm bg-black p-8">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm  p-8">
         <input
           type="email"
           placeholder="Email address"

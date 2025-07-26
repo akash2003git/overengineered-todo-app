@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
 import api from "../api/axiosInstance";
-import Button from "./Button"; // Adjust path if needed
+import Button from "./Button";
 
 import {
-  editingTodoAtom, // The atom holding the todo being edited
-  todosLoadingAtom, // For loading state during todo operations
-  todosErrorAtom, // For error messages during todo operations
+  editingTodoAtom,
+  todosLoadingAtom,
+  todosErrorAtom,
 } from "../store/store";
 
 function EditTodoForm({ onTodoUpdated }) {
-  // Callback for when todo is updated/deleted
-  const editingTodo = useAtomValue(editingTodoAtom); // Get the todo object to edit
+  const editingTodo = useAtomValue(editingTodoAtom);
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -20,19 +19,17 @@ function EditTodoForm({ onTodoUpdated }) {
   const setTodosLoading = useSetAtom(todosLoadingAtom);
   const setTodosError = useSetAtom(todosErrorAtom);
 
-  // Effect to pre-populate form fields when editingTodo changes
   useEffect(() => {
     if (editingTodo) {
       setTitle(editingTodo.title || "");
       setDescription(editingTodo.description || "");
       setCompleted(editingTodo.completed || false);
     } else {
-      // Clear form if no todo is being edited (e.g., modal closed)
       setTitle("");
       setDescription("");
       setCompleted(false);
     }
-  }, [editingTodo]); // Re-run this effect when editingTodo changes
+  }, [editingTodo]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -54,7 +51,7 @@ function EditTodoForm({ onTodoUpdated }) {
       console.log("Todo updated successfully:", response.data);
 
       if (onTodoUpdated) {
-        onTodoUpdated(); // Notify parent to close modal and re-fetch
+        onTodoUpdated();
       }
     } catch (error) {
       console.error(
@@ -87,9 +84,8 @@ function EditTodoForm({ onTodoUpdated }) {
       return;
     }
 
-    // Optional: Add a confirmation dialog here later for better UX
     if (!window.confirm("Are you sure you want to delete this todo?")) {
-      return; // User cancelled
+      return;
     }
 
     setTodosLoading(true);
@@ -100,7 +96,7 @@ function EditTodoForm({ onTodoUpdated }) {
       console.log("Todo deleted successfully!");
 
       if (onTodoUpdated) {
-        onTodoUpdated(); // Notify parent to close modal and re-fetch
+        onTodoUpdated();
       }
     } catch (error) {
       console.error(
@@ -116,7 +112,6 @@ function EditTodoForm({ onTodoUpdated }) {
   const isLoading = useAtomValue(todosLoadingAtom);
   const todosError = useAtomValue(todosErrorAtom);
 
-  // If no todo is being edited, perhaps show a message or nothing
   if (!editingTodo) {
     return (
       <p className="text-center text-gray-500 dark:text-gray-400">
@@ -143,7 +138,6 @@ function EditTodoForm({ onTodoUpdated }) {
         className="w-full p-3 mb-4 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-y"
       ></textarea>
 
-      {/* Completed checkbox */}
       <div className="flex items-center mb-6">
         <input
           type="checkbox"
@@ -171,17 +165,16 @@ function EditTodoForm({ onTodoUpdated }) {
       <div className="flex justify-between space-x-4">
         <Button
           label="Update Todo"
-          type="submit" // This button updates
+          type="submit"
           altStyle={false}
           className="flex-1 py-2"
           disabled={isLoading}
         />
         <Button
           label="Delete Todo"
-          type="button" // Important: type="button" to prevent form submission
-          onClick={handleDelete} // This button deletes
-          altStyle={true} // Use altStyle for delete, often red or distinct
-          className="flex-1 py-2 bg-red-500 hover:bg-red-600 text-white dark:bg-red-600 dark:hover:bg-red-700 focus:ring-red-300"
+          type="button"
+          onClick={handleDelete}
+          className="flex-1 py-2 bg-red-500 dark:bg-red-500 hover:bg-red-600 text-white focus:ring-red-300"
           disabled={isLoading}
         />
       </div>

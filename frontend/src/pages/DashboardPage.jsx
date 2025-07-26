@@ -7,12 +7,9 @@ import TodoForm from "../components/TodoForm";
 import Button from "../components/Button";
 import { IoMdAdd } from "react-icons/io";
 import Modal from "../components/common/Modal";
-
-// Import the EditTodoForm component
 import EditTodoForm from "../components/EditTodoForm";
-
-// Import icons for theme toggle
 import { MdLightMode, MdDarkMode } from "react-icons/md";
+
 import {
   userAtom,
   isAuthenticatedAtom,
@@ -22,8 +19,6 @@ import {
 } from "../store/store";
 
 function DashboardPage() {
-  // State for theme: 'light' or 'dark', initialized from localStorage or system preference
-  // REMOVED: const theme = "dark"; // This line was overriding the useState theme
   const [theme, setTheme] = useState(() => {
     if (localStorage.getItem("theme")) {
       return localStorage.getItem("theme");
@@ -103,8 +98,8 @@ function DashboardPage() {
 
   const handleEditModalClose = () => {
     setIsEditModalOpen(false);
-    setEditingTodo(null); // Clear the editing todo when modal closes
-    fetchTodos(); // Re-fetch todos to ensure list is updated after potential edit/delete
+    setEditingTodo(null);
+    fetchTodos();
   };
 
   return (
@@ -116,8 +111,6 @@ function DashboardPage() {
         <Button
           label={<IoMdAdd className="text-2xl" />}
           onClick={() => setIsAddTodoModalOpen(true)}
-          altStyle={true}
-          className="p-2 rounded-full text-black dark:text-white bg-white dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 focus:ring-blue-300 dark:focus:ring-blue-600"
         />
       </div>
 
@@ -156,7 +149,6 @@ function DashboardPage() {
         )
       )}
 
-      {/* Modal for Adding New Todo */}
       <Modal
         isOpen={isAddTodoModalOpen}
         onClose={() => setIsAddTodoModalOpen(false)}
@@ -165,18 +157,14 @@ function DashboardPage() {
         <TodoForm onTodoAdded={handleTodoAdded} />
       </Modal>
 
-      {/* Modal for Editing/Deleting Todo */}
       <Modal
         isOpen={isEditModalOpen}
         onClose={handleEditModalClose}
         title="Edit Todo"
       >
-        <EditTodoForm
-          onTodoUpdated={handleEditModalClose} // This callback handles closing and re-fetching
-        />
+        <EditTodoForm onTodoUpdated={handleEditModalClose} />
       </Modal>
 
-      {/* Theme Toggle Button - Sticky at bottom-left */}
       <Button
         label={
           theme === "light" ? (
